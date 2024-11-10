@@ -1,0 +1,85 @@
+//////////// ********* ( Experiment 10 ) ********** ///////////
+///////////  ----> ATM System <-----
+
+#include<iostream>
+using namespace std;
+void inputCardDetails(int & cardnumber, int&balance, int & cardType) {
+	cout << "Enter the card number " ;
+	cin >> cardnumber;
+	cout << "Enter the Initial Balence " ;
+	cin >> balance;
+	cout << "Enter card type 1 for Silver ,2 for gold " ;
+	cin >> cardType;
+}
+void withDrawMoney( int cardtype) {
+	int amount;
+	if (cardtype == 1) { // for silver
+		cout << "Enter the amount to be with drawn(Max : 10,000) ";
+		cin >> amount;
+		if (amount <= 10000) {
+			cout << "The amount  " << amount << "  is Sucess Fully withdrawn" << endl;
+		}
+		else
+			cout << "You exceed the limit " << endl;
+	}
+	else if (cardtype == 2) { // for gold 
+		cout << "Enter the amount to be with drawn(Max : 25,000) ";
+		cin >> amount;
+		if (amount <= 25000) {
+			cout << "The amount  " << amount << "  is Sucess Fully withdrawn" << endl;
+		}
+		else
+			cout << "You exceed the limit " << endl;
+	}
+}
+void balenceInquiry(int& cardnumber,int &balance){
+	cout << "Your ATM card number is : " << cardnumber << endl;
+	cout << "Your current Balence is :" << balance << endl;
+}
+void TransferMoney(int &balance) {
+	int num,amount;
+	cout << "Enter account number to Transfer Money ";
+	cin >> num;
+	cout << "ENter Money to Transfer ";
+	cin >> amount;
+	if (balance >= amount) {
+		balance -= amount;
+		cout << "Money is Transferd Sucess Fully. " << "Your balance is " << balance << endl;
+	}
+	else {
+		cout << "In Sufficient Balence . Transfer Failed. " << "Your balance is " << balance << endl;
+	}
+}
+int main() {
+	int choice, cardnumber;
+	int balance;
+	int cardType=0;
+
+	cout << "***********( ATM Card System )*********** " << endl;
+	inputCardDetails(cardnumber, balance, cardType);
+	//cout << "ATM CARD DeTaiLs" << endl;
+	//cout << "Your balance is " << balance << "$" << endl;
+	//cout << "Your card is " << cardType << endl;
+	while (true) {
+		cout << "----> Menu : " << endl;
+		cout << "Enter your choice " << endl;
+		cout << "1 for with draw money " << endl;
+		cout << "2 for Balance Inquiry " << endl;
+		cout << "3 for Transfer Money " << endl;
+		cout << "4 for exit " << endl;
+		cin >> choice;
+		if (choice == 1) {
+			withDrawMoney(cardType);
+		}
+		else if (choice == 2) {
+			balenceInquiry(cardnumber, balance);
+		}
+		else if (choice == 3) {
+			TransferMoney(balance);
+		}
+		if (choice == 4) {
+			cout << "Program terminates / exciting program " << endl;
+			break;
+		}
+	}
+}
