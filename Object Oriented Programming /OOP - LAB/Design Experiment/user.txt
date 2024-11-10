@@ -1,0 +1,4 @@
+Mudassir      4321  student
+Teacher       123   faculty
+Admin         321   admin
+Adminstrator  1235  ums
