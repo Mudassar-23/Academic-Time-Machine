@@ -1,0 +1,102 @@
+//#include <iostream>
+//using namespace std;
+//
+//void Merge(int* arr1, int size1, int* arr2, int size2, int* mergedArr)
+//{
+//    for (int i = 0; i < size1; i++)
+//    {
+//        mergedArr[i] = arr1[i];
+//    }
+//
+//    for (int i = 0; i < size2; i++)
+//    {
+//        mergedArr[size1 + i] = arr2[i];
+//    }
+//}
+//
+//void DisplayData(int* array, int size)
+//{
+//    cout << "Array Elements: ";
+//
+//    for (int i = 0; i < size; ++i)
+//    {
+//        cout << array[i] << " ";
+//    }
+//
+//    cout << endl;
+//}
+//
+//int RemoveDuplicates(int* arr, int size)
+//{
+//    for (int i = 0; i < size; ++i)
+//    {
+//        bool isDuplicate = false;
+//
+//        for (int j = 0; j < i; ++j)
+//        {
+//            if (arr[i] == arr[j])
+//            {
+//                isDuplicate = true;
+//                break;
+//            }
+//        }
+//
+//        if (isDuplicate)
+//        {
+//            for (int k = i; k < size - 1; k++)
+//            {
+//                arr[k] = arr[k + 1];
+//            }
+//
+//            size--;
+//            i--;
+//        }
+//    }
+//
+//    return size;
+//}
+//
+//int main()
+//{
+//    int size1, size2, size3;
+//
+//    cout << "Enter The Size of First Array: ";
+//    cin >> size1;
+//
+//    cout << "Enter The Size of Second Array: ";
+//    cin >> size2;
+//
+//    size3 = size1 + size2;
+//
+//    int* array1 = new int[size1];
+//    int* array2 = new int[size2];
+//    int* array3 = new int[size3];
+//
+//    cout << "Enter The Elements of First Array: ";
+//
+//    for (int i = 0; i < size1; ++i)
+//    {
+//        cin >> array1[i];
+//    }
+//
+//    cout << "Enter The Elements of Second Array: ";
+//
+//    for (int i = 0; i < size2; ++i)
+//    {
+//        cin >> array2[i];
+//    }
+//
+//    Merge(array1, size1, array2, size2, array3);
+//
+//    DisplayData(array3, size3);
+//
+//    int nSize = RemoveDuplicates(array3, size3);
+//
+//    DisplayData(array3, nSize);
+//
+//    delete[] array1;
+//    delete[] array2;
+//    delete[] array3;
+//
+//    return 0;
+//}
