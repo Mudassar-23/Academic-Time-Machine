@@ -1,0 +1,125 @@
+%----------------------------------  Ex 12.2 -----------------------------------%
+
+syms t;
+x1=heaviside(t+2)-heaviside(t-2);
+x2=heaviside(t+1)-heaviside(t-1);
+X1=fourier(x1);
+X2=fourier(x2);
+X=ifourier(X2);
+
+t=-10:0.01:10;
+w=-3*pi:0.1:3*pi;
+
+x1= heaviside(t+2)-heaviside(t-2);
+x2=heaviside(t+1)-heaviside(t-1);
+
+X1=(cos(2.*w).*1i + sin(2.*w))./w - (cos(2.*w).*1i - sin(2.*w))./w;
+X2=- (- sin(w) + cos(w).*1i)./w + (sin(w) + cos(w).*1i)./w;
+X=-(2.*pi.*heaviside(t - 1) - 2.*pi.*heaviside(t + 1))./(2.*pi);
+
+
+subplot(3,3,1),plot(t,x1,'LineWidth',2),axis([-10 10 0 1]),title('x(t)'),grid
+
+subplot(3,3,2),plot(w,abs(X1),'LineWidth',2),axis([-10 10 0 4]),title('|x(w)|'),grid
+
+subplot(3,3,3),plot(w,angle(X1),'LineWidth',2),axis([-10 10 0 4]),title('Phase'),grid
+
+subplot(3,3,4),plot(t/2,x1,'LineWidth',2),axis([-10 10 0 1]),title('x_1 (t)=x(2t)'),grid
+
+subplot(3,3,5),plot(2*w,abs(0.5*X1),'LineWidth',2),axis([-10 10 0 2]),title('|x_1(w)|'),grid
+
+subplot(3,3,6),plot(2*w,angle(0.5*X1),'LineWidth',2),axis([-10 10 0 4]),title('Phase'),grid
+
+subplot(3,3,7),plot(t,x2,'LineWidth',2),axis([-10 10 0 1]),title('F^-1[(1/2)X(w/2)]'),grid
+
+subplot(3,3,8),plot(w,abs(X2),'LineWidth',2),axis([-10 10 0 2]),title('|(1/2)X(w/2)|'),grid
+
+subplot(3,3,9),plot(w,angle(X2),'LineWidth',2),axis([-10 10 0 4]),title('Phase'),grid
+
+
+
+
+
+
+
+
+
+
+%----------------------------------  Ex 12.1 figure-12.2-----------------------------------%
+
+
+syms t;
+
+x1=heaviside(t+2)-heaviside(t-2);
+X1=fourier(x1);
+x2=exp(-2*t)*heaviside(t);
+X2=fourier(x2);
+x_def=2*x1+3*x2;
+
+X_DEF=fourier(x_def);
+
+t=[-5:0.01:5];
+w=[-2*pi:0.01:2*pi];
+
+X1=(cos(2*w)*1i+sin(2*w))./w-(cos(2*w)*1i-sin(2*w))./w;
+X2=1./(2 + w*1i);
+x=2*X1+3*X2;
+X_DEF=3./(2+w*1i)-2*exp(-w*2i).*(pi*dirac(w)-1i./w)+2*exp(w*2i).*(pi*dirac(w)-1i./w);
+
+subplot(2,2,1)
+plot(w,abs(x),'LineWidth',2)
+xlabel('w-->')
+title('magnitude plot of 2*X_1 (w)+ 3*X_2 (w)'),grid, axis([-10 10 0 10])
+
+subplot(2,2,2)
+plot(w,angle(x),'LineWidth',2)
+xlabel('w-->')
+title('phase plot of 2*X_1 (w)+ 3*X_2 (w)'),grid, axis([-10 10 -4 4])
+
+subplot(2,2,3)
+plot(w,abs(X_DEF),'LineWidth',2)
+xlabel('w-->')
+title('magnitude plot of F(2*x_1 (w)+ 3*x_2 (w))'),grid,axis([-10 10 0 10])
+
+subplot(2,2,4)
+plot(w,angle(X_DEF),'LineWidth',2)
+xlabel('w-->')
+title('phase plot of F(2*x_1 (w)+ 3*x_2 (w))'),grid,axis([-10 10 -4 4])
+
+
+
+
+
+
+
+
+
+%----------------------------------  Ex 12.1 figure-12.1-----------------------------------%
+
+
+syms t
+x1=heaviside(t+2)-heaviside(t-2);
+x2=exp(-t*2)*heaviside(t);
+
+x=2*x1+3*x2;
+
+X1 =fourier(x1);
+X2 =fourier(x2);
+X =fourier(x);
+
+t=[-5:0.01:5];
+w=[-2*pi:.1:2*pi];
+
+x1=heaviside(t+2)-heaviside(t-2);
+x2=exp(-t*2).*heaviside(t);
+
+x=2*x1+3*x2;
+
+X1 = 2./w.*sin(2*w);
+X2 = 1./(2+i*w);
+X = 4./w.*sin(2*w)+3./(2+i*w);
+
+subplot(311),plot(t,x,'linewidth',2),grid,title('plot of x(t)=2*x_1 (t)+ 3*x_2(t)')
+subplot(312),plot(w,(2*X1+3*X2),'linewidth',2),grid,
+title('plot of 2*X_1(w)+ 3*X_2 (w)')
+subplot(313),plot(w,(X),'linewidth',2),grid,title('plot of X(w)')
