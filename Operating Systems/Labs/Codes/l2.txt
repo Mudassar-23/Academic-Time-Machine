@@ -1,0 +1,205 @@
+///////////// q1 /////////////
+#include<iostream>
+#include<stdlib.h>
+
+using namespace std;
+
+int main(int argc, char *argv[])
+{
+    int sum = 0;
+
+    for(int i = 1; i < argc; i++)
+    {
+        sum += atoi(argv[i]);
+    }
+
+    int average = sum / (argc - 1);
+
+    cout << "Sum= " << sum << endl;
+    cout << "Average= " << average << endl;
+
+    return 0;
+}
+///////////// q2 ////////////
+#include<iostream>
+#include<stdlib.h>
+
+using namespace std;
+
+int main(int argc, char *argv[])
+{
+    int size = argc - 1;
+    int array[size];
+
+    for(int i = 0; i < size; i++)
+    {
+        array[i] = atoi(argv[i + 1]);
+    }
+
+    for(int i = 0; i < size; i++)
+    {
+        for(int j = i + 1; j < size; j++)
+        {
+            if(array[i] > array[j])
+            {
+                int temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+            }
+        }
+    }
+
+    cout << "Sorted Array= ";
+
+    for(int i = 0; i < size; i++)
+    {
+        cout << array[i] << " ";
+    }
+
+    return 0;
+}
+///////////////////// q3 ///////////
+#include<iostream>
+#include<fstream>
+#include<string>
+#include<stdlib.h>
+
+using namespace std;
+
+int main(int argc, char* argv[])
+{
+    ifstream mFile(argv[1]);
+    string data;
+
+    while(getline(mFile, data))
+    {
+        cout << endl;
+        cout << "Contents in txt File: " << data << endl;
+    }
+
+    mFile.close();
+
+    return 0;
+}
+/////////////// q4 /////////////
+//function.cpp
+#include<stdio.h>
+
+int sum_array(int arr[], int size)
+{
+    int sum = 0;
+
+    for(int i = 0; i < size; i++)
+    {
+        sum += arr[i];
+    }
+
+    return sum;
+}
+
+//main.cpp
+#include <stdio.h>
+
+int sum_array(int arr[], int size);
+void print_array(int arr[], int size);
+
+int main()
+{
+    int arr[] = {1, 2, 3, 4, 5};
+    int size = 5;
+
+    print_array(arr, size);
+
+    int sum = sum_array(arr, size);
+
+    printf("Sum of array elements= %d\n", sum);
+
+    return 0;
+}
+
+//utlis.cpp
+
+#include<iostream>
+
+using namespace std;
+
+void print_array(int arr[], int size)
+{
+    cout << "Array elements: ";
+
+    for(int i = 0; i < size; i++)
+    {
+        cout << arr[i];
+    }
+
+    cout << endl;
+}
+
+// make file tab spaces
+
+all: output
+output: main.o function.o utils.o
+g++ main.o function.o utlis.o -o output
+
+main.o: main.cpp
+g++ -c main.cpp
+
+function.o: function.cpp
+g++ -c function.cpp
+
+utils.o: utils.cpp
+g++ -c utils.cpp
+
+// run
+
+g++ -c main.cpp
+g++ -c function.cpp
+g++ -c utils.cpp
+
+g++ main.o function.o utlis.o -o output
+./output
+
+////////////////////// q5 ////////////
+#include<iostream>
+#include<stdlib.h>
+
+using namespace std;
+
+int main(int argc, char *argv[])
+{
+    int size = argc - 1;
+    int array[size];
+
+    for(int i = 0; i < size; i++)
+    {
+        array[i] = atoi(argv[i + 1]);
+    }
+
+    int a = 0;
+    int b = 1;
+    int c;
+
+    for(int i = 2; i < size; i++)
+    {
+        c = a + b;
+
+        if(array[i] != c)
+        {
+            cout << "missing element is: " << c << endl;
+            break;
+        }
+
+        a = b;
+        b = c;
+    }
+
+    return 0;
+}
+
+
+
+
+
+
+
+

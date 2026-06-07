@@ -1,0 +1,236 @@
+/////////////////////// sample ///////////
+
+Sample 
+Client 
+#include <stdio.h> 
+#include <string.h> 
+#include <arpa/inet.h> 
+#include <sys/socket.h> 
+#include <unistd.h> 
+int main() 
+{ 
+int sd; 
+char msg[100]; 
+struct sockaddr_in server_addr; 
+server_addr.sin_family = AF_INET; 
+server_addr.sin_port = htons(4999); 
+server_addr.sin_addr.s_addr = inet_addr("127.0.0.1"); 
+sd = socket(AF_INET, SOCK_STREAM, 0); 
+connect(sd, (struct sockaddr *)&server_addr, 
+sizeof(server_addr)); 
+recv(sd, msg, sizeof(msg), 0); 
+printf("%s\n", msg); 
+close(sd); 
+return 0; 
+} 
+
+
+Server
+ 
+#include <stdio.h> 
+#include <string.h> 
+#include <arpa/inet.h> 
+#include <sys/socket.h> 
+#include <unistd.h> 
+int main() 
+{ 
+int sd, new_sd; 
+char *msg = "Connected"; 
+struct sockaddr_in my_addr, client_addr; 
+socklen_t size; 
+my_addr.sin_family = AF_INET; 
+my_addr.sin_port = htons(4999); 
+my_addr.sin_addr.s_addr = inet_addr("127.0.0.1"); 
+sd = socket(AF_INET, SOCK_STREAM, 0); 
+     bind(sd, (struct sockaddr *)&my_addr, 
+     sizeof(my_addr)); 
+     listen(sd, 5); 
+     size = sizeof(client_addr); 
+     new_sd = accept(sd, (struct sockaddr *)&client_addr,&size); 
+     send(new_sd, msg, strlen(msg) + 1, 0); 
+     close(new_sd); 
+     close(sd); 
+return 0; 
+} 
+ 
+
+
+
+
+
+
+
+/////////////////////////// Q1 /
+
+  
+Client 
+#include <stdio.h> 
+#include <string.h> 
+#include <arpa/inet.h> 
+#include <sys/socket.h> 
+#include <unistd.h> 
+ 
+int main() 
+{ 
+    int sd; 
+    int num1, num2, sum; 
+ 
+    struct sockaddr_in server_addr; 
+ 
+    server_addr.sin_family = AF_INET; 
+    server_addr.sin_port = htons(4999); 
+    server_addr.sin_addr.s_addr = inet_addr("127.0.0.1"); 
+ 
+    sd = socket(AF_INET, SOCK_STREAM, 0); 
+ 
+    connect(sd, (struct sockaddr *)&server_addr, sizeof(server_addr)); 
+ 
+    printf("Enter two numbers: "); 
+    scanf("%d %d", &num1, &num2); 
+ 
+    send(sd, &num1, sizeof(num1), 0); 
+    send(sd, &num2, sizeof(num2), 0); 
+ 
+    recv(sd, &sum, sizeof(sum), 0); 
+ 
+    printf("Server responds: Sum is %d\n", sum); 
+ 
+    close(sd); 
+ 
+    return 0; 
+} 
+
+
+Server 
+ 
+#include <stdio.h> 
+#include <string.h> 
+#include <arpa/inet.h> 
+#include <sys/socket.h> 
+#include <unistd.h> 
+ 
+int main() 
+{ 
+    int sd, new_sd; 
+    int num1, num2, sum; 
+ 
+    struct sockaddr_in my_addr, client_addr; 
+    socklen_t size; 
+ 
+    my_addr.sin_family = AF_INET; 
+    my_addr.sin_port = htons(4999); 
+    my_addr.sin_addr.s_addr = inet_addr("127.0.0.1"); 
+ 
+    sd = socket(AF_INET, SOCK_STREAM, 0); 
+ 
+    bind(sd, (struct sockaddr *)&my_addr, sizeof(my_addr)); 
+ 
+    listen(sd, 5); 
+ 
+    size = sizeof(client_addr); 
+ 
+    new_sd = accept(sd, (struct sockaddr *)&client_addr, &size); 
+ 
+    recv(new_sd, &num1, sizeof(num1), 0); 
+    recv(new_sd, &num2, sizeof(num2), 0); 
+ 
+    sum = num1 + num2; 
+ 
+    send(new_sd, &sum, sizeof(sum), 0); 
+ 
+    close(new_sd); 
+    close(sd); 
+ 
+    return 0; 
+} 
+/////////////////////////// q2 ////////////////////////
+
+Q2 
+ 
+Client 
+#include <stdio.h> 
+#include <string.h> 
+#include <arpa/inet.h> 
+#include <sys/socket.h> 
+#include <unistd.h> 
+ 
+int main() 
+{ 
+    int sd; 
+    char city[100]; 
+    char msg[100]; 
+ 
+    struct sockaddr_in server_addr; 
+ 
+    server_addr.sin_family = AF_INET; 
+    server_addr.sin_port = htons(4999); 
+    server_addr.sin_addr.s_addr = inet_addr("127.0.0.1"); 
+ 
+    sd = socket(AF_INET, SOCK_STREAM, 0); 
+ 
+    connect(sd, (struct sockaddr *)&server_addr, sizeof(server_addr)); 
+ 
+    printf("Enter city name: "); 
+    scanf("%s", city); 
+ 
+    send(sd, city, strlen(city)+1, 0); 
+ 
+    recv(sd, msg, sizeof(msg), 0); 
+ 
+    printf("Server Response: %s\n", msg); 
+ 
+    close(sd); 
+ 
+    return 0; 
+} 
+ 
+Server 
+#include <stdio.h> 
+#include <string.h> 
+#include <arpa/inet.h> 
+#include <sys/socket.h> 
+#include <unistd.h> 
+ 
+int main() 
+{ 
+    int sd, new_sd; 
+    char city[100]; 
+    char response[100]; 
+ 
+    struct sockaddr_in my_addr, client_addr; 
+    socklen_t size; 
+ 
+    my_addr.sin_family = AF_INET; 
+    my_addr.sin_port = htons(4999); 
+    my_addr.sin_addr.s_addr = inet_addr("127.0.0.1"); 
+ 
+    sd = socket(AF_INET, SOCK_STREAM, 0); 
+ 
+    bind(sd, (struct sockaddr *)&my_addr, sizeof(my_addr)); 
+ 
+    listen(sd, 5); 
+ 
+    size = sizeof(client_addr); 
+ 
+    new_sd = accept(sd, (struct sockaddr *)&client_addr, &size); 
+ 
+    recv(new_sd, city, sizeof(city), 0); 
+ 
+    printf("Client asked weather for: %s\n", city); 
+ 
+    if(strcmp(city, "Karachi") == 0) 
+        strcpy(response, "Karachi: 25C, Sunny"); 
+    else if(strcmp(city, "Lahore") == 0) 
+        strcpy(response, "Lahore: 30C, Hot"); 
+    else if(strcmp(city, "Islamabad") == 0) 
+        strcpy(response, "Islamabad: 22C, Cloudy"); 
+    else 
+        strcpy(response, "City not found"); 
+ 
+    send(new_sd, response, strlen(response)+1, 0); 
+ 
+    close(new_sd); 
+close(sd); 
+return 0; 
+}
+//////////////////////////////////////

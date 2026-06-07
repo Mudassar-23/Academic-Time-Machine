@@ -1,0 +1,128 @@
+
+///////////////////////////// q1 //////////////////////////
+Q1 
+#include <stdio.h> 
+#include <sys/ipc.h> 
+#include <sys/shm.h> 
+#include <unistd.h> 
+#include <string.h> 
+#include <sys/wait.h> 
+ 
+int main() { 
+    int shmid; 
+    char *shm; 
+    shmid = shmget(IPC_PRIVATE, 1024, 0666 | IPC_CREAT); 
+    shm = (char *)shmat(shmid, NULL, 0); 
+    if (fork() == 0) { 
+        sleep(1); 
+        printf("Child read: %s\n", shm); 
+        shmdt(shm); 
+    } 
+    else { 
+        strcpy(shm, "Hello from Parent"); 
+        printf("Parent wrote to shared memory\n"); 
+        wait(NULL); 
+        shmdt(shm); 
+        shmctl(shmid, IPC_RMID, NULL); 
+    } 
+    return 0; 
+} 
+
+////////////////////////// q3 /////////////////////////////
+Q3 
+ 
+#include <stdio.h> 
+#include <sys/ipc.h> 
+#include <sys/shm.h> 
+#include <unistd.h> 
+#include <sys/wait.h> 
+ 
+int main() { 
+    int shmid; 
+    shmid = shmget(IPC_PRIVATE, 1024, 0666 | IPC_CREAT); 
+    if(fork()>0) { 
+      int *shm= (int *)shmat(shmid, NULL, 0); 
+      shm[0]=1; 
+      shm[1]=10;        Write data to the shared memory 
+     printf("Producer wrote to shared memory: %d\n", shm[1]); 
+ 
+ 
+      shmdt(shm); 
+    } 
+ 
+ 
+    else {  // CHILD PROCESS 
+      int *shm= (int *)shmat(shmid, NULL, 0); 
+      while (shm[0] != 1); 
+        printf("Consumer received: %d\n", shm[1]); 
+        wait(NULL); 
+        shmdt(shm); 
+        shmctl(shmid, IPC_RMID, NULL); 
+    } 
+    return 0; 
+  } 
+ 
+ 
+/////////////////////////////// q2 ////////////////////////////
+
+/// Client ///
+
+#include <stdio.h> 
+#include <sys/ipc.h> 
+#include <sys/shm.h> 
+ 
+int main() 
+{ 
+    int shmid; 
+    char *shm; 
+ 
+    key_t key = 1234; 
+ 
+    shmid = shmget(key, 1024, 0666); 
+ 
+    shm = (char*) shmat(shmid, NULL, 0); 
+ 
+    printf("Client received: %s", shm); 
+ 
+    // convert lowercase to uppercase 
+    for(int i=0; shm[i] != '\0'; i++) 
+    { 
+        if(shm[i] >= 'a' && shm[i] <= 'z') 
+            shm[i] = shm[i] - 32; 
+    } 
+ 
+    printf("After converting to uppercase: %s", shm); 
+ 
+    shmdt(shm); // detach 
+ 
+    shmctl(shmid, IPC_RMID, NULL); // delete shared memory 
+ 
+    return 0; 
+} 
+ 
+ 
+ 
+///  Server ///
+ 
+#include <stdio.h> 
+#include <sys/ipc.h> 
+#include <sys/shm.h> 
+#include <string.h> 
+ 
+int main() 
+{ 
+    int shmid; 
+    char *shm; 
+ 
+    key_t key = 1234; // shared key 
+ 
+    shmid = shmget(key, 1024, 0666 | IPC_CREAT); 
+ 
+    shm = (char*) shmat(shmid, NULL, 0); 
+ 
+    printf("Enter a string: "); 
+fgets(shm, 1024, stdin);  // Reads from keyboard and stores it in shared memory 
+printf("Server wrote to shared memory.\n"); 
+shmdt(shm); // detach 
+return 0; 
+}

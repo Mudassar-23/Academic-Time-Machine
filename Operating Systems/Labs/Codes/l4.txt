@@ -1,0 +1,177 @@
+/// sample //
+
+#include <pthread.h> 
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <iostream> 
+
+using namespace std; 
+   
+int sum = 0;               // Shared data 
+   
+// Thread function 
+void* runner(void *param) 
+{ 
+    // Ensure param is not null before converting 
+
+    if (param == NULL) 
+        pthread_exit(0); 
+   
+    int upper = atoi((char*)param); 
+
+    for (int i = 1; i <= upper; i++) 
+    { 
+        sum += i; 
+    } 
+
+    pthread_exit(0); 
+} 
+   
+int main(int argc, char *argv[]) 
+{ 
+    if (argc < 2) 
+    { 
+        cerr << "Usage: " << argv[0] << " <integer_value>" << endl; 
+        return 1; 
+    } 
+
+    pthread_t threadID; 
+
+    pthread_create(&threadID, NULL, runner, argv[1]); 
+
+    pthread_join(threadID, NULL); 
+      
+    cout << "Sum = " << sum << endl; 
+
+    return 0; 
+} 
+/////////////////  q1  //////////////////////
+#include <pthread.h> 
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <iostream> 
+
+using namespace std;          
+  
+void* runner(void *param) 
+{ 
+    char* message = (char*)param; 
+ 
+    for (int i = 0; i < 5; i++) 
+    { 
+        cout << message << endl; 
+    } 
+ 
+    pthread_exit(NULL); 
+} 
+  
+int main() 
+{ 
+    char msg1[ ] = "Hello"; 
+    char msg2[ ] = "World"; 
+    char msg3[ ] = "Threads"; 
+  
+    pthread_t thread1, thread2, thread3; 
+ 
+    pthread_create(&thread1, NULL, runner, msg1); 
+    pthread_create(&thread2, NULL, runner, msg2); 
+    pthread_create(&thread3, NULL, runner, msg3); 
+     
+    pthread_join(thread1, NULL); 
+    pthread_join(thread2, NULL); 
+    pthread_join(thread3, NULL); 
+     
+    return 0; 
+}
+//////////////// q2 ///////////////
+// multithread
+#include <pthread.h> 
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <iostream> 
+
+using namespace std; 
+
+int count; 
+
+void* min(void *param) 
+{ 
+    int* array1 = (int*) param; 
+    int min = array1[0]; 
+
+    for(int i =0; i<count; i++) 
+    { 
+        if(min > array1[i]) 
+        {  
+            min = array1[i]; 
+        } 
+    } 
+
+    cout << "Min: " << min << endl; 
+
+    return NULL; 
+} 
+
+void* max(void *param) 
+{ 
+    int* array1 = (int*) param; 
+    int max = array1[0]; 
+
+    for(int i =0; i<count; i++) 
+    { 
+        if(max < array1[i]) 
+        { 
+            max = array1[i]; 
+        } 
+    } 
+
+    cout << "Max: " << max << endl; 
+
+    return NULL; 
+} 
+
+void* avg(void *param) 
+{ 
+    int* array1 = (int*) param; 
+    int sum =0; 
+
+    for(int i =0; i<count; i++) 
+    { 
+        sum = sum + array1[i]; 
+    } 
+
+    int avg = sum / count; 
+
+    cout << "Average: " << avg << endl; 
+
+    return NULL; 
+} 
+
+int main(int argc, char *argv[]) 
+{ 
+    int array[argc-1]; 
+
+    for(int i =0; i<argc-1; i++) 
+    { 
+        array[i] = atoi(argv[i+1]); 
+    } 
+
+    count = argc-1; 
+
+    pthread_t threadID1, threadID2, threadID3; 
+
+    pthread_create(&threadID1, NULL, min, array); 
+    pthread_join(threadID1, NULL); 
+
+    pthread_create(&threadID2, NULL, max, array); 
+    pthread_join(threadID2, NULL); 
+
+    pthread_create(&threadID3, NULL, avg, array); 
+    pthread_join(threadID3, NULL); 
+
+    return 0;  
+}
+g++ q1.cpp -o q1 -lpthread
+./q1 1 2 3 4 5
+//////////////////////
+

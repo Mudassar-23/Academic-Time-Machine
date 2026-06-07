@@ -1,0 +1,145 @@
+////////////////////// q1 ////////////////
+#include<iostream>
+#include<unistd.h>
+
+using namespace std;
+
+int main()
+{
+    pid_t pid = fork();
+
+    if(pid == 0)
+    {
+        for(int i = 0; i < 100; i++)
+        {
+            cout << "I am a Child Process" << endl;
+        }
+    }
+    else if(pid > 0)
+    {
+        for(int i = 0; i < 100; i++)
+        {
+            cout << "I am a Parent Process" << endl;
+        }
+    }
+    else
+    {
+        cout << "Fork Failed" << endl;
+    }
+
+    return 0;
+}
+
+
+////////////////////// q2 ////////////////
+
+#include<iostream>
+#include<unistd.h>
+#include<sys/wait.h>
+
+using namespace std;
+
+int main()
+{
+    pid_t pid = fork();
+
+    if(pid == 0)
+    {
+        cout << "Child Process: Listing current directory contents" << endl;
+
+        execlp("ls", "ls", NULL);
+    }
+    else if(pid > 0)
+    {
+        wait(NULL);
+
+        cout << "Parent Process: Child has finished execution" << endl;
+    }
+
+    return 0;
+}
+
+////////////////////// q3 ////////////////
+#include<iostream>
+#include<unistd.h>
+#include<sys/wait.h>
+#include<stdlib.h>
+
+using namespace std;
+
+int main(int argc, char* argv[])
+{
+    if(argc < 2)
+    {
+        cout << "Usage num1,2,3 " << endl;
+        return 1;
+    }
+
+    int n = argc - 1; // n is size
+    int arr[n];
+
+    for(int i = 0; i < n; i++)
+    {
+        arr[i] = atoi(argv[i + 1]);
+    }
+
+    pid_t pid1, pid2, pid3;
+
+    pid1 = fork();
+
+    if(pid1 == 0)
+    {
+        int sum = 0;
+
+        for(int i = 0; i < n; i++)
+        {
+            sum += arr[i];
+        }
+
+        cout << "Child1: (Sum) " << sum << endl;
+
+        return 0;
+    }
+
+    pid2 = fork();
+
+    if(pid2 == 0)
+    {
+        int sum = 0;
+
+        for(int i = 0; i < n; i++)
+        {
+            sum += arr[i];
+        }
+
+        int avg = sum / n;
+
+        cout << "Child2: Average: " << avg << endl;
+
+        return 0;
+    }
+
+    pid3 = fork();
+
+    if(pid3 == 0)
+    {
+        int max = arr[0];
+
+        for(int i = 1; i < n; i++)
+        {
+            if(arr[i] > max)
+                max = arr[i];
+        }
+
+        cout << "Child3: (maximum) " << max << endl;
+
+        return 0;
+    }
+
+    // parent wait for children
+    wait(NULL);
+    wait(NULL);
+    wait(NULL);
+
+    return 0;
+}

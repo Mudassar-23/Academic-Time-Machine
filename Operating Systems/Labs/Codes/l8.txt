@@ -1,0 +1,185 @@
+/////////  Example code 
+ 
+writer 
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <fcntl.h> 
+#include <unistd.h> 
+#include <sys/stat.h> 
+ 
+int main() 
+{ 
+    const char *fifo = "myfifo";   // Named pipe file 
+ 
+    // Create the FIFO (named pipe) 
+    mkfifo(fifo, 0666); 
+ 
+    // Open FIFO for writing 
+    int fd = open(fifo, O_WRONLY); 
+ 
+    // Redirect standard output to FIFO 
+    dup2(fd, 1); 
+ 
+    // Write message to FIFO 
+    printf("Hello from Writer Process!\n"); 
+ 
+    close(fd); 
+ 
+    return 0; 
+} 
+ 
+reader 
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <fcntl.h> 
+#include <unistd.h> 
+ 
+int main() 
+{ 
+    const char *fifo = "myfifo";   // Named pipe file 
+    char buffer[100]; 
+ 
+    // Open FIFO for reading 
+    int fd = open(fifo, O_RDONLY); 
+ 
+    // Redirect standard input to FIFO 
+    dup2(fd, 0); 
+ 
+    // Read from FIFO and print 
+    fgets(buffer, sizeof(buffer), stdin); 
+    printf("Reader got: %s", buffer); 
+ 
+    close(fd); 
+ 
+    return 0; 
+} 
+// First run reader, then writer 
+//Run reader first, otherwise writer may block 
+ //mkfifo creates a file named “myfifo” in your directory
+
+/////////////////////  Q1   /////////////////////
+
+Server.cpp 
+ 
+#include <iostream> 
+#include <fcntl.h> 
+#include <unistd.h> 
+#include <sys/stat.h> 
+ 
+using namespace std; 
+ 
+int main() 
+{ 
+    const char *fifo1 = "fifo1";   // Client → Server 
+    const char *fifo2 = "fifo2";   // Server → Client 
+ 
+    mkfifo(fifo1, 0666); 
+    mkfifo(fifo2, 0666); 
+ 
+    int fd_read = open(fifo1, O_RDONLY); 
+    int fd_write = open(fifo2, O_WRONLY); 
+ 
+    char op; 
+    int a, b, result; 
+ 
+    // Read input from client 
+    read(fd_read, &op, sizeof(op)); 
+    read(fd_read, &a, sizeof(a)); 
+    read(fd_read, &b, sizeof(b)); 
+ 
+    // Perform operation 
+    switch(op) 
+    { 
+        case '+': result = a + b; break; 
+        case '-': result = a - b; break; 
+        case '*': result = a * b; break; 
+        case '/': result = a / b; break; 
+        default: result = 0; 
+    } 
+ 
+    // Send result to client 
+    write(fd_write, &result, sizeof(result)); 
+ 
+    close(fd_read); 
+    close(fd_write); 
+ 
+    return 0; 
+} 
+ 
+Client.cpp 
+#include <iostream> 
+#include <fcntl.h> 
+#include <unistd.h> 
+ 
+using namespace std; 
+ 
+int main() 
+{ 
+    const char *fifo1 = "fifo1";   // Client → Server 
+    const char *fifo2 = "fifo2";   // Server → Client 
+ 
+    char op; 
+    int a, b, result; 
+ 
+    cout << "Enter operator (+ - * /): "; 
+    cin >> op; 
+ 
+    cout << "Enter first number: "; 
+    cin >> a; 
+ 
+    cout << "Enter second number: "; 
+    cin >> b; 
+ 
+    int fd_write = open(fifo1, O_WRONLY); 
+    int fd_read = open(fifo2, O_RDONLY); 
+ 
+    // Send data to server 
+    write(fd_write, &op, sizeof(op)); 
+    write(fd_write, &a, sizeof(a)); 
+    write(fd_write, &b, sizeof(b)); 
+ 
+    // Read result from server 
+    read(fd_read, &result, sizeof(result)); 
+ 
+    cout << "Result from server = " << result << endl; 
+ 
+    close(fd_write); 
+    close(fd_read); 
+ 
+    return 0; 
+} 
+ 
+ 
+//Run server then client
+
+/////////////////////  Q2  /////////////////////
+#include <stdio.h> 
+#include <unistd.h> 
+#include <sys/types.h> 
+ 
+int main() 
+{ 
+    int fd[2]; 
+    pipe(fd);   // create pipe 
+ 
+    pid_t pid = fork(); 
+ 
+    if (pid > 0) 
+    { 
+        // Parent → executes "ls" 
+        close(fd[0]); // close read end 
+        dup2(fd[1], 1); // stdout → pipe write end 
+        close(fd[1]); 
+        execlp("ls", "ls", NULL); 
+    } 
+    else if (pid == 0) 
+    { 
+        // Child → executes "sort" 
+        close(fd[1]); // close write end 
+        dup2(fd[0], 0); // stdin ← pipe read end 
+        close(fd[0]); 
+        execlp("sort", "sort", NULL); 
+    } 
+ 
+    return 0; 
+}
