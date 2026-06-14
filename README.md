@@ -1,6 +1,6 @@
 ## 🎓 Academic Projects & Work
 
-This repository contains all academic work and projects.
+This repository contains all academic work, past papers and projects.
 
 ---
 ## How to Clone it
