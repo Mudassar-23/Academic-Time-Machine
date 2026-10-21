@@ -1,0 +1,210 @@
+#include <iostream>
+#include <pthread.h>
+#include <semaphore.h>
+#include <unistd.h>
+
+using namespace std;
+
+// Semaphore
+sem_t mutex;
+
+// Scores
+int score1 = 0;
+int score2 = 0;
+int score3 = 0;
+
+// Player 1
+void* player1(void* arg)
+{
+    sem_wait(&mutex);
+
+    cout << "Player 1 is playing..." << endl;
+
+    score1 += 10;
+
+    cout << "Player 1 scored! Score = "
+         << score1 << endl;
+
+    sleep(1);
+
+    sem_post(&mutex);
+
+    pthread_exit(NULL);
+}
+
+// Player 2
+void* player2(void* arg)
+{
+    sem_wait(&mutex);
+
+    cout << "Player 2 is playing..." << endl;
+
+    score2 += 20;
+
+    cout << "Player 2 scored! Score = "
+         << score2 << endl;
+
+    sleep(1);
+
+    sem_post(&mutex);
+
+    pthread_exit(NULL);
+}
+
+// Player 3
+void* player3(void* arg)
+{
+    sem_wait(&mutex);
+
+    cout << "Player 3 is playing..." << endl;
+
+    score3 += 30;
+
+    cout << "Player 3 scored! Score = "
+         << score3 << endl;
+
+    sleep(1);
+
+    sem_post(&mutex);
+
+    pthread_exit(NULL);
+}
+
+int main()
+{
+    pthread_t t1, t2, t3;
+
+    // Initialize semaphore
+    sem_init(&mutex, 0, 1);
+
+    // Create threads
+    pthread_create(&t1, NULL, player1, NULL);
+    pthread_create(&t2, NULL, player2, NULL);
+    pthread_create(&t3, NULL, player3, NULL);
+
+    // Wait for threads
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+    pthread_join(t3, NULL);
+
+    // Destroy semaphore
+    sem_destroy(&mutex);
+
+    // Final scores
+    cout << "\nFinal Scores:" << endl;
+
+    cout << "Player 1 = " << score1 << endl;
+    cout << "Player 2 = " << score2 << endl;
+    cout << "Player 3 = " << score3 << endl;
+
+    return 0;
+}
+///////////////////////////////
+
+writer
+// writer.c
+#include <stdio.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+int main() {
+    int fd;
+    float temp = 104.0;
+
+    mkfifo("temp_pipe", 0666);
+
+    fd = open("temp_pipe", O_WRONLY);
+
+    write(fd, &temp, sizeof(temp));
+
+    printf("Fahrenheit Temperature Sent: %.2f\n", temp);
+
+    close(fd);
+
+    return 0;
+}
+reader
+// reader.c
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+int main() {
+    int fd;
+    float fahrenheit, celsius;
+
+    // Open pipe for reading
+    fd = open("temp_pipe", O_RDONLY);
+
+    // Read Fahrenheit temperature
+    read(fd, &fahrenheit, sizeof(fahrenheit));
+
+    // Convert to Celsius
+    celsius = (5.0 / 9.0) * (fahrenheit - 32);
+
+    printf("Fahrenheit: %.2f\n", fahrenheit);
+    printf("Celsius: %.2f\n", celsius);
+
+    close(fd);
+
+    return 0;
+} Fahrenheit → Celsius
+////////////////////////
+
+
+reader
+// reader.c
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+int main() {
+    int fd;
+    float celsius, fahrenheit;
+
+    // Open pipe for reading
+    fd = open("temp_pipe", O_RDONLY);
+
+    // Read temperature
+    read(fd, &celsius, sizeof(celsius));
+
+    // Convert to Fahrenheit
+    fahrenheit = (9.0 / 5.0) * celsius + 32;
+
+    printf("Celsius: %.2f\n", celsius);
+    printf("Fahrenheit: %.2f\n", fahrenheit);
+
+    close(fd);
+
+    return 0;
+}
+
+writer
+
+// writer.c
+#include <stdio.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+int main() {
+    int fd;
+    float temp = 40.0;
+
+    // Create named pipe
+    mkfifo("temp_pipe", 0666);
+
+    // Open pipe for writing
+    fd = open("temp_pipe", O_WRONLY);
+
+    // Write temperature
+    write(fd, &temp, sizeof(temp));
+
+    printf("Celsius Temperature Sent: %.2f\n", temp);
+
+    close(fd);
+
+    return 0;
+}
+.//////
